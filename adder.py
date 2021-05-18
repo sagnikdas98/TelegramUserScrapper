@@ -16,19 +16,20 @@ from telethon.tl.functions.channels import InviteToChannelRequest
 from telethon.tl.functions.messages import AddChatUserRequest
 
 
-credential_file = "credentials.json" #Relative Path of File which consists Telegram Credentials(api_id, api_hash, phone)
+credential_file = "credentials2.json" #Relative Path of File which consists Telegram Credentials(api_id, api_hash, phone)
 try:
-    input_file = sys.argv[1] # list of users #File to save the scrapped members data
+    input_file = sys.argv[1]# list of users #File to save the scrapped members data
 except:
+    input_file = "members1.csv"
     print("Pass members.csv as command-line argument.")
 
-start_index = 0
+start_index = 1
 continue_script = False
 
 if len(sys.argv) == 5:
-    g_index = sys.argv[2]
-    mode = sys.argv[3]
-    start_index = sys.argv[4]
+    g_index = int(sys.argv[2])
+    mode = int(sys.argv[3])
+    start_index = int(sys.argv[4])
     continue_script = True
 
 
@@ -154,9 +155,9 @@ for i in range(start_index,len(users)):
             client(AddChatUserRequest(target_group.id, user_to_add,fwd_limit=50))
 
         user_added_count += 1
-        wait_time = random.randrange(60, 180)
+        wait_time = random.randrange(50, 80)
         print("Waiting for",wait_time, "Seconds...")
-        time.sleep(wait_time)
+       # time.sleep(wait_time)
     except PeerFloodError:
         print("Getting Flood Error from telegram. Script is stopping now. Please try again after some time.")
         print("Run the following command after few hours to contiune where you left off:")
@@ -166,6 +167,10 @@ for i in range(start_index,len(users)):
         print("The user's privacy settings do not allow you to do this. Skipping.")
     except UserAlreadyParticipantError:
         continue
+    except KeyboardInterrupt:
+        print("python3 adder.py members.csv", g_index, mode, i)
+        sys.exit("Stopping Process")
+
     except:
         traceback.print_exc()
         print("Unexpected Error")
